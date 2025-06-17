@@ -5,7 +5,7 @@ services:
     env_file:
       - .env
     ports:
-      - "8000:8000"
+      - "${API_PORT}:8000"
     restart: unless-stopped
 
   uptime-kuma:
@@ -17,5 +17,59 @@ services:
       - uptime-kuma-data:/app/data
     restart: unless-stopped
 
+  prefect-server:
+    image: prefecthq/prefect:2-python3.12
+    command: prefect server start --host 0.0.0.0
+    container_name: prefect-server
+    env_file:
+      - .env
+    ports:
+      - "4200:4200"
+    volumes:
+      - prefect_data:/root/.prefect
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      PREFECT_API_DATABASE_CONNECTION_URL: ${PREFECT_API_DATABASE_CONNECTION_URL}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "bash -c \"exec 3<>/dev/tcp/127.0.0.1/4200; echo -e 'GET / HTTP/1.1\\r\\nhost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep 'HTTP/1.1 200 OK' <&3\""
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+
+  prefect-worker:
+    image: prefecthq/prefect:2-python3.12
+    container_name: prefect-worker
+    env_file:
+      - .env
+    environment:
+      EXTRA_PIP_PACKAGES: "-r /home/karn1zc/Simplon/Template_projets_chef_oeuvre/requirements.txt"
+      PYTHONPATH: /home/karn1zc/Simplon/Template_projets_chef_oeuvre/app
+    command: prefect worker start --pool "${PREFECT_WORK_POOL}"
+    depends_on:
+      prefect-server:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./:/home/karn1zc/Simplon/Template_projets_chef_oeuvre
+
+  postgres:
+    image: postgres:15
+    container_name: prefect-postgres
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - prefect-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
 volumes:
   uptime-kuma-data:
+  prefect_data:
+  prefect-postgres-data:

@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copie le code de l'application
 COPY app/ ./app/
 
+# Copie le dossier de tests
+COPY tests/ ./tests/
+
 # Copie le fichier d'environnement (optionnel, car docker-compose gère aussi l'env_file)
 COPY .env .env
 

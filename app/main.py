@@ -6,6 +6,7 @@ from typing import List
 from contextlib import asynccontextmanager
 from app.notify_discord import notify_discord
 import mlflow
+from prometheus_fastapi_instrumentator import Instrumentator
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
@@ -21,6 +22,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+Instrumentator().instrument(app).expose(app)
 
 # Modèles Pydantic pour les entrées/sorties
 class PredictRequest(BaseModel):

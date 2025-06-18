@@ -4,3 +4,11 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.png
+*.csv
+*.pdf
+*.db
+mlflow_data/
+mlruns/
+prometheus_data/
+grafana_data/

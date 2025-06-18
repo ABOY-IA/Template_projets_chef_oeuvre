@@ -29,7 +29,11 @@ WEBHOOK_URL=https://discord.com/api/webhooks/
 # MLflow
 MLFLOW_PORT=5000
 MLFLOW_ARTIFACT_ROOT=/mlflow/artifacts
-MLFLOW_BACKEND_STORE_URI=sqlite:///mlflow.db
+MLFLOW_BACKEND_STORE_URI=sqlite:////mlflow_data/mlflow.db
+
+# Prometheus & Grafana
+PROMETHEUS_PORT=9090
+GRAFANA_PORT=3000
 ```
 
 2. Construire et lancer les services.

@@ -25,6 +25,11 @@ PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://prefect:prefect@postgre
 
 # Discord Webhook (ne jamais exposer en clair dans le code)
 WEBHOOK_URL=https://discord.com/api/webhooks/
+
+# MLflow
+MLFLOW_PORT=5000
+MLFLOW_ARTIFACT_ROOT=/mlflow/artifacts
+MLFLOW_BACKEND_STORE_URI=sqlite:///mlflow.db
 ```
 
 2. Construire et lancer les services.

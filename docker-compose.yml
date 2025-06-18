@@ -34,10 +34,9 @@ services:
       PREFECT_API_DATABASE_CONNECTION_URL: ${PREFECT_API_DATABASE_CONNECTION_URL}
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          "bash -c \"exec 3<>/dev/tcp/127.0.0.1/4200; echo -e 'GET / HTTP/1.1\\r\\nhost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep 'HTTP/1.1 200 OK' <&3\""
-        ]
+        - CMD-SHELL
+        - >
+          bash -c "exec 3<>/dev/tcp/127.0.0.1/4200; echo -e 'GET / HTTP/1.1\r\nhost: localhost\r\nConnection: close\r\n\r\n' >&3; grep 'HTTP/1.1 200 OK' <&3"
       interval: 5s
       timeout: 10s
       retries: 20
@@ -69,7 +68,44 @@ services:
       - prefect-postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.12.1
+    container_name: mlflow
+    env_file:
+      - .env
+    ports:
+      - "${MLFLOW_PORT}:5000"
+    environment:
+      MLFLOW_ARTIFACT_ROOT: ${MLFLOW_ARTIFACT_ROOT}
+      MLFLOW_BACKEND_STORE_URI: ${MLFLOW_BACKEND_STORE_URI}
+    volumes:
+      - ./mlruns:${MLFLOW_ARTIFACT_ROOT}
+      - ./mlflow_data:/mlflow_data
+    restart: unless-stopped
+    command: mlflow server --host 0.0.0.0 --port 5000
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    volumes:
+      - ./prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+
 volumes:
   uptime-kuma-data:
   prefect_data:
   prefect-postgres-data:
+  grafana_data:

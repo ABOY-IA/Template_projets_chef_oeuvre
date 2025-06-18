@@ -3,7 +3,7 @@ import random
 from prefect import flow, task, get_run_logger
 from dotenv import load_dotenv
 
-from notify_discord import notify_discord
+from app.notify_discord import notify_discord
 
 # Charge toutes les variables d'environnement depuis le .env
 load_dotenv()

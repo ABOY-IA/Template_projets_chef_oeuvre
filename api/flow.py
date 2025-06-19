@@ -3,7 +3,7 @@ import random
 from prefect import flow, task, get_run_logger
 from dotenv import load_dotenv
 from app.notify_discord import notify_discord
-from app.logger import logger
+from utils.logger import logger
 
 load_dotenv()
 PREFECT_API_URL = os.getenv("PREFECT_API_URL")

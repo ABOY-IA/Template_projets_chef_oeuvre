@@ -74,3 +74,170 @@ Arrêter la stack (tous les services) :
 
 `docker compose down`
 
+## 🐍 Environnement Python
+
+### Prérequis
+
+- Python 3.12 (recommandé)
+- `pip` installé et mis à jour (inclus avec Python)
+- Terminal ou shell (Linux, macOS, Windows PowerShell, Bash, etc.)
+
+### Création et activation de l’environnement virtuel
+
+À la racine du projet :
+
+```
+python3 -m venv .venv
+```
+
+Activation :
+- Sous Linux / macOS :
+    ```
+    source .venv/bin/activate
+    ```
+- Sous Windows (PowerShell) :
+    ```
+    .venv\Scripts\Activate.ps1
+    ```
+- Sous Windows (CMD) :
+    ```
+    .venv\Scripts\activate.bat
+    ```
+
+Désactivation :
+```
+deactivate
+```
+
+Mettre à jour pip :
+```
+python -m pip install --upgrade pip
+```
+
+Installer les dépendances :
+```
+pip install -r requirements.txt
+```
+
+Générer ou mettre à jour le requirements.txt :
+```
+pip freeze > requirements.txt
+```
+
+---
+
+## ⚙️ Configuration du fichier `.env`
+
+Le fichier `.env` doit être créé à la racine du projet.  
+Il contient toutes les variables d’environnement nécessaires au fonctionnement de l’application et à la configuration de Docker Compose.
+
+**Exemple de contenu minimal :**
+```
+# Clé secrète utilisée pour signer et vérifier les JWT (doit être identique partout)
+SECRET_KEY=supersecretkey123
+
+# Algorithme utilisé pour les JWT (par défaut: HS256)
+ALGORITHM=HS256
+
+# Durée de vie des tokens access/refresh (en minutes/jours)
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+
+# Clé de création admin (si utilisée)
+ADMIN_CREATION_SECRET=MonSecretSuperSecurise
+
+# Connexion à la base Postgres
+DATABASE_URL=postgresql://user:pass@db:5432/xtremdb
+
+# Configuration de la base de données
+DB_HOST=db
+DB_PORT=5432
+DB_WAIT_TIMEOUT=120
+POSTGRES_USER=user
+POSTGRES_PASSWORD=pass
+POSTGRES_DB=xtremdb
+
+# URL de l'API (pour le frontend ou les tests)
+API_URL=http://api:8000
+
+# Désactive la télémétrie Streamlit
+STREAMLIT_BROWSER_GATHERUSAGESTATS=false
+
+# Compose bake (optionnel, selon ton usage)
+COMPOSE_BAKE=true
+```
+
+---
+
+## 🔒 Sécurité PostgreSQL
+
+La base PostgreSQL est configurée pour :
+- Authentification SCRAM-SHA-256
+- Chiffrement SSL/TLS (certificats auto-signés par défaut)
+- Connexions réseau sécurisées entre les services Docker
+
+Les fichiers de configuration et certificats sont dans le dossier `postgres-custom/`, injectés automatiquement à l’initialisation.
+
+---
+
+## 🐳 Commandes Docker Compose
+
+### Nettoyer entièrement (images, volumes, orphelins)
+```
+docker-compose down --rmi all --volumes --remove-orphans
+```
+
+### Build complet et lancement de la stack
+```
+export COMPOSE_BAKE=true
+docker-compose up --build
+```
+
+### Relancer simplement (si déjà build)
+```
+docker-compose up
+```
+
+### Arrêter la stack (tous les services)
+```
+docker-compose down
+```
+
+### Lancer les tests unitaires
+```
+docker-compose run --rm tests
+```
+
+### Créer un compte admin
+```
+docker-compose run --rm api python create_admin.py
+```
+
+---
+
+## 📁 Arborescence du projet
+
+
+
+---
+
+## 📝 Conseils et bonnes pratiques
+
+- **Créer le `.env` avec les noms de variables indiqués dans l'exemple**
+- **Vérifiez la cohérence des variables d’environnement entre le `.env` et le `docker-compose.yml`.**
+- **Pour toute modification de la configuration PostgreSQL (SCRAM, SSL, etc.), nettoyez les volumes avant de rebuild.**
+- **Pour ajouter des dépendances Python, modifiez le `requirements.txt` du dossier concerné puis rebuildez l’image correspondante.**
+- **Consultez les logs dans le dossier `logs/` pour le debug.**
+
+---
+
+## 👨‍💻 Pour aller plus loin
+
+- Ajoutez une CI/CD pour automatiser les tests et le déploiement.
+- Ajoutez Prometheus/Grafana pour la supervision.
+- Sécurisez les certificats SSL pour la production (utilisez une vraie CA).
+- Ajoutez des scripts de migration si vous faites évoluer le schéma de la base.
+
+---
+
+# **By KaRn1zC**

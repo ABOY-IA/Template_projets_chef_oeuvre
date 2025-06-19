@@ -7,7 +7,7 @@ import httpx
 from unittest.mock import patch, MagicMock
 from asgi_lifespan import LifespanManager
 from app.main import app
-from app.logger import logger
+from utils.logger import logger
 
 @pytest.fixture(autouse=True)
 def mock_external_dependencies():

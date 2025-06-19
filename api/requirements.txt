@@ -16,3 +16,14 @@ python-dateutil
 pydantic[email]
 psycopg2-binary
 bcrypt
+python-multipart
+email_validator
+starlette
+prefect
+mlflow
+scikit-learn
+pandas
+numpy
+docker
+requests
+boto3

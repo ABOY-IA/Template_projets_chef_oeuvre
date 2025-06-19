@@ -2,7 +2,7 @@ import os
 import random
 from prefect import flow, task, get_run_logger
 from dotenv import load_dotenv
-from app.notify_discord import notify_discord
+from api.notify_discord import notify_discord
 from utils.logger import logger
 
 load_dotenv()

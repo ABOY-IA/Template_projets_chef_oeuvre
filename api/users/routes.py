@@ -10,7 +10,7 @@ from api.db.services import create_user, authenticate_user, get_user_by_username
 from api.db.models import User, UserSensitiveData
 from api.core.crypto import encrypt_sensitive_data, decrypt_sensitive_data
 from api.core.tokens import create_access_token
-from api.logger import logger
+from utils.logger import logger
 import os
 from datetime import timedelta
 

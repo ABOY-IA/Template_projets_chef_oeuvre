@@ -7,7 +7,7 @@ from fastapi import Request
 from api.db.session import SessionLocal
 from api.db.models import User
 from api.db.schemas import UserOut
-from api.logger import logger
+from utils.logger import logger
 
 router = APIRouter()
 

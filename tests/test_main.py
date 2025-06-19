@@ -6,7 +6,7 @@ import pytest
 import httpx
 from unittest.mock import patch, MagicMock
 from asgi_lifespan import LifespanManager
-from app.main import app
+from api.main import app
 from utils.logger import logger
 
 @pytest.fixture(autouse=True)

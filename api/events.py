@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from loguru import logger
+from utils.logger import logger
 from api.db.base import init_db
 
 def register_startup_events(app: FastAPI):

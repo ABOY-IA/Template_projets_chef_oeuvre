@@ -1,6 +1,6 @@
 import pytest
 import asyncio
-from tests.logger import logger
+from utils.logger import logger
 
 @pytest.mark.asyncio
 async def test_login_and_refresh_cycle(async_client):

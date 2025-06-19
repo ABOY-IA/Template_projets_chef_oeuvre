@@ -11,7 +11,7 @@ from api.core.tokens import create_access_token
 from api.db.session import SessionLocal
 from api.db.models import User, UserSensitiveData
 from api.core.crypto import encrypt_sensitive_data, decrypt_sensitive_data
-from api.logger import logger
+from utils.logger import logger
 
 router = APIRouter()
 

@@ -3,7 +3,7 @@ import pytest_asyncio
 from uuid import uuid4
 from api.core.crypto import generate_user_key
 from api.db.services import create_user
-from tests.logger import logger
+from utils.logger import logger
 
 @pytest_asyncio.fixture
 async def admin_user(db_session):

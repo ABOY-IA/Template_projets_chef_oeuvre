@@ -1,9 +1,9 @@
 import os
 import httpx
 import streamlit as st
-from frontend.logger import logger
+from utils.logger import logger
 
-API_URL = os.getenv("API_URL", "http://api:8000")
+API_URL = os.getenv("API_URL")
 
 # ——— Bouton de déconnexion unique ———
 if "user" in st.session_state and st.sidebar.button("Se déconnecter", key="logout"):

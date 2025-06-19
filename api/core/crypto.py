@@ -1,6 +1,6 @@
 from cryptography.fernet import Fernet, InvalidToken
 from typing import Optional
-from api.logger import logger
+from utils.logger import logger
 
 def generate_user_key() -> str:
     """Génère une clé de chiffrement unique pour un utilisateur."""

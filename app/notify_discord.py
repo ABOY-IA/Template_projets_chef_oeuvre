@@ -1,9 +1,9 @@
 import os
 import requests
 from dotenv import load_dotenv
+from app.logger import logger
 
 load_dotenv()
-
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 def notify_discord(message: str, status: str = "Succès"):
@@ -11,14 +11,14 @@ def notify_discord(message: str, status: str = "Succès"):
     Envoie une notification formatée (embed) à Discord via Webhook.
     """
     if not WEBHOOK_URL:
-        print("Aucune URL de webhook Discord n'est définie.")
+        logger.warning("Aucune URL de webhook Discord n'est définie.")
         return
 
     embed = {
         "embeds": [{
             "title": "Résultats du pipeline",
             "description": message,
-            "color": 5814783,  # Couleur bleue (hex: 0x58B9FF)
+            "color": 5814783,
             "fields": [
                 {
                     "name": "Status",
@@ -28,8 +28,12 @@ def notify_discord(message: str, status: str = "Succès"):
             ]
         }]
     }
-    response = requests.post(WEBHOOK_URL, json=embed)
-    if response.status_code != 204:
-        print(f"Erreur Discord : {response.status_code} - {response.text}")
-    else:
-        print("Notification Discord envoyée avec succès.")
+
+    try:
+        response = requests.post(WEBHOOK_URL, json=embed)
+        if response.status_code != 204:
+            logger.error(f"Erreur Discord : {response.status_code} - {response.text}")
+        else:
+            logger.success("Notification Discord envoyée avec succès.")
+    except Exception as e:
+        logger.exception(f"Exception lors de l'envoi à Discord : {e}")

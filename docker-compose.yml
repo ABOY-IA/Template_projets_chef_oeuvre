@@ -7,6 +7,8 @@ services:
     ports:
       - "${API_PORT}:8000"
     restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
 
   uptime-kuma:
     image: louislam/uptime-kuma:latest

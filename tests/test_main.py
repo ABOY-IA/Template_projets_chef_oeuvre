@@ -1,6 +1,9 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
 
 import pytest
 import httpx
@@ -9,14 +12,17 @@ from asgi_lifespan import LifespanManager
 from api.main import app
 from utils.logger import logger
 
+
 @pytest.fixture(autouse=True)
 def mock_external_dependencies():
-    with patch("app.notify_discord.notify_discord") as mock_notify, \
-         patch("mlflow.start_run") as mock_start_run, \
-         patch("mlflow.log_param") as mock_log_param, \
-         patch("mlflow.log_metric") as mock_log_metric:
+    with patch("app.notify_discord.notify_discord") as mock_notify, patch(
+        "mlflow.start_run"
+    ) as mock_start_run, patch("mlflow.log_param") as mock_log_param, patch(
+        "mlflow.log_metric"
+    ) as mock_log_metric:
         mock_start_run.return_value.__enter__.return_value = MagicMock()
         yield
+
 
 @pytest.mark.asyncio
 async def test_health_check():
@@ -30,6 +36,7 @@ async def test_health_check():
     assert response.json() == {"status": "ok"}
     logger.success("Fin du test: test_health_check")
 
+
 @pytest.mark.asyncio
 async def test_predict_valid():
     logger.info("Début du test: test_predict_valid")
@@ -37,12 +44,15 @@ async def test_predict_valid():
         async with httpx.AsyncClient(
             transport=httpx.ASGITransport(app=app), base_url="http://test"
         ) as ac:
-            response = await ac.post("/predict", json={"data": [1.0, 2.0, 3.0]})
+            response = await ac.post(
+                "/predict", json={"data": [1.0, 2.0, 3.0]}
+            )
     assert response.status_code == 200
     data = response.json()
     assert "prediction" in data
     assert abs(data["prediction"] - 2.0) < 1e-6
     logger.success("Fin du test: test_predict_valid")
+
 
 @pytest.mark.asyncio
 async def test_predict_empty_data():
@@ -56,6 +66,7 @@ async def test_predict_empty_data():
     assert "Erreur lors de la prédiction" in response.text
     logger.success("Fin du test: test_predict_empty_data")
 
+
 @pytest.mark.asyncio
 async def test_generate():
     logger.info("Début du test: test_generate")
@@ -63,12 +74,15 @@ async def test_generate():
         async with httpx.AsyncClient(
             transport=httpx.ASGITransport(app=app), base_url="http://test"
         ) as ac:
-            response = await ac.post("/generate", json={"prompt": "test prompt"})
+            response = await ac.post(
+                "/generate", json={"prompt": "test prompt"}
+            )
     assert response.status_code == 200
     data = response.json()
     assert "result" in data
     assert "test prompt" in data["result"]
     logger.success("Fin du test: test_generate")
+
 
 @pytest.mark.asyncio
 async def test_retrain():

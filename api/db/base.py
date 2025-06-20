@@ -5,6 +5,7 @@ from .models import Base
 from .session import async_engine
 from utils.logger import logger
 
+
 async def init_db(max_retries: int = 30, delay: float = 2.0) -> None:
     """
     Crée toutes les tables en début d'application, via engine async.
@@ -23,5 +24,7 @@ async def init_db(max_retries: int = 30, delay: float = 2.0) -> None:
                 f"[init_db] Tentative {attempt}/{max_retries} échouée : {e}. Nouvelle tentative dans {delay} secondes..."
             )
             await asyncio.sleep(delay)
-    logger.error(f"[init_db] Impossible d'initialiser la base après {max_retries} tentatives. Dernière erreur : {last_exception}")
+    logger.error(
+        f"[init_db] Impossible d'initialiser la base après {max_retries} tentatives. Dernière erreur : {last_exception}"
+    )
     raise last_exception

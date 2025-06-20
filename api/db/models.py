@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -15,9 +16,16 @@ class User(Base):
     refresh_token = Column(String, nullable=True)
     bio = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    updated_at = Column(
+        DateTime,
+        default=datetime.datetime.utcnow,
+        onupdate=datetime.datetime.utcnow,
+    )
     encryption_key = Column(String, unique=True, index=True)
-    sensitive_data = relationship("UserSensitiveData", back_populates="user", uselist=False)
+    sensitive_data = relationship(
+        "UserSensitiveData", back_populates="user", uselist=False
+    )
+
 
 class UserSensitiveData(Base):
     __tablename__ = "user_sensitive_data"

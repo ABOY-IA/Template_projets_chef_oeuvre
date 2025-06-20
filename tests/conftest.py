@@ -9,24 +9,31 @@ import api.db.base as db_base
 import api.db.session as db_sess
 from utils.logger import logger
 
+
 @pytest.fixture(scope="session")
 def event_loop():
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
 
+
 DB_URL = os.getenv("DATABASE_URL")
 if not DB_URL:
     logger.error("La variable DATABASE_URL doit être définie pour les tests")
-    raise RuntimeError("La variable DATABASE_URL doit être définie pour les tests")
+    raise RuntimeError(
+        "La variable DATABASE_URL doit être définie pour les tests"
+    )
 if not DB_URL.startswith("postgresql://"):
     logger.error("DATABASE_URL doit commencer par postgresql://")
     raise RuntimeError("DATABASE_URL doit commencer par postgresql://")
 
 ASYNC_URL = DB_URL.replace("postgresql://", "postgresql+asyncpg://")
 engine = create_async_engine(ASYNC_URL, echo=False, pool_pre_ping=True)
-TestingSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+TestingSessionLocal = sessionmaker(
+    bind=engine, class_=AsyncSession, expire_on_commit=False
+)
 db_sess.SessionLocal = TestingSessionLocal
+
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
 async def setup_database():
@@ -37,6 +44,7 @@ async def setup_database():
     async with engine.begin() as conn:
         await conn.run_sync(db_base.Base.metadata.drop_all)
 
+
 @pytest_asyncio.fixture
 async def async_client():
     """
@@ -45,6 +53,7 @@ async def async_client():
     logger.debug("Création du client HTTP asynchrone pour les tests")
     async with AsyncClient(base_url="http://api:8000") as ac:
         yield ac
+
 
 @pytest_asyncio.fixture
 async def db_session():

@@ -39,7 +39,9 @@ if page == "Connexion":
             else:
                 err = resp.json().get("detail", resp.text)
                 st.error(f"Échec de la connexion : {err}")
-                logger.warning(f"Échec de la connexion pour {username} : {err}")
+                logger.warning(
+                    f"Échec de la connexion pour {username} : {err}"
+                )
         except httpx.RequestError as e:
             st.error(f"Erreur réseau : {e}")
             logger.error(f"Erreur réseau lors de la connexion : {e}")
@@ -50,12 +52,16 @@ elif page == "Inscription":
         new_username = st.text_input("Nom d'utilisateur")
         new_email = st.text_input("Email")
         new_password = st.text_input("Mot de passe", type="password")
-        confirm_password = st.text_input("Confirmer le mot de passe", type="password")
+        confirm_password = st.text_input(
+            "Confirmer le mot de passe", type="password"
+        )
         submitted = st.form_submit_button("S'inscrire")
     if submitted:
         if new_password != confirm_password:
             st.error("Les mots de passe ne correspondent pas.")
-            logger.warning(f"Échec inscription : mots de passe non concordants pour {new_username}")
+            logger.warning(
+                f"Échec inscription : mots de passe non concordants pour {new_username}"
+            )
         else:
             try:
                 resp = httpx.post(
@@ -68,14 +74,18 @@ elif page == "Inscription":
                     timeout=10,
                 )
                 if resp.status_code == 201:
-                    st.success(f"Inscription réussie ! Bienvenue {new_username} 🎉")
+                    st.success(
+                        f"Inscription réussie ! Bienvenue {new_username} 🎉"
+                    )
                     st.session_state["user"] = new_username
                     st.session_state["role"] = ""
                     logger.info(f"Inscription réussie pour {new_username}")
                 else:
                     err = resp.json().get("detail", resp.text)
                     st.error(f"Échec de l'inscription : {err}")
-                    logger.warning(f"Échec inscription pour {new_username} : {err}")
+                    logger.warning(
+                        f"Échec inscription pour {new_username} : {err}"
+                    )
             except httpx.RequestError as e:
                 st.error(f"Erreur réseau : {e}")
                 logger.error(f"Erreur réseau lors de l'inscription : {e}")

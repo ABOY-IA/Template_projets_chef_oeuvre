@@ -12,9 +12,10 @@ oauth2_scheme = OAuth2PasswordBearer(
     scopes={
         "read:profile": "Permet de lire les informations du profil utilisateur.",
         "write:profile": "Permet de modifier les informations du profil utilisateur.",
-        "admin": "Accès complet pour l'administration."
-    }
+        "admin": "Accès complet pour l'administration.",
+    },
 )
+
 
 def get_current_user_with_scopes(
     security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)
@@ -29,7 +30,7 @@ def get_current_user_with_scopes(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"}
+            headers={"WWW-Authenticate": "Bearer"},
         )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -40,16 +41,18 @@ def get_current_user_with_scopes(
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token payload",
-                headers={"WWW-Authenticate": "Bearer"}
+                headers={"WWW-Authenticate": "Bearer"},
             )
         # Vérification que tous les scopes requis sont présents
         for scope in security_scopes.scopes:
             if scope not in token_scopes:
-                logger.warning(f"Permission insuffisante : scope manquant {scope}")
+                logger.warning(
+                    f"Permission insuffisante : scope manquant {scope}"
+                )
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail=f"Insufficient permissions. Missing scope: {scope}",
-                    headers={"WWW-Authenticate": f'Bearer scope="{scope}"'}
+                    headers={"WWW-Authenticate": f'Bearer scope="{scope}"'},
                 )
         return {"username": username, "scopes": token_scopes}
     except JWTError:
@@ -57,5 +60,5 @@ def get_current_user_with_scopes(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate token",
-            headers={"WWW-Authenticate": "Bearer"}
+            headers={"WWW-Authenticate": "Bearer"},
         )

@@ -11,13 +11,18 @@ load_dotenv()
 ADMIN_CREATION_SECRET = os.getenv("ADMIN_CREATION_SECRET")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+
 def main():
     admin_secret = os.getenv("ADMIN_CREATION_SECRET")
     if not admin_secret:
-        logger.error("La variable d'environnement ADMIN_CREATION_SECRET n'est pas définie.")
+        logger.error(
+            "La variable d'environnement ADMIN_CREATION_SECRET n'est pas définie."
+        )
         return
 
-    provided_secret = getpass("Veuillez entrer le secret d'administration : ").strip()
+    provided_secret = getpass(
+        "Veuillez entrer le secret d'administration : "
+    ).strip()
     if provided_secret != admin_secret:
         logger.warning("Secret incorrect. Accès refusé.")
         return
@@ -34,14 +39,26 @@ def main():
     db = SessionLocal()
     encryption_key = generate_user_key()
     try:
-        admin_user = create_user(db, username, email, password, role="admin", encryption_key=encryption_key)
-        logger.info(f"Compte administrateur créé avec succès : username='{admin_user.username}', id={admin_user.id}")
-        print(f"Compte administrateur créé avec succès : {admin_user.username}")
+        admin_user = create_user(
+            db,
+            username,
+            email,
+            password,
+            role="admin",
+            encryption_key=encryption_key,
+        )
+        logger.info(
+            f"Compte administrateur créé avec succès : username='{admin_user.username}', id={admin_user.id}"
+        )
+        print(
+            f"Compte administrateur créé avec succès : {admin_user.username}"
+        )
     except Exception as e:
         logger.exception("Erreur lors de la création du compte administrateur")
         print("Erreur lors de la création du compte administrateur :", e)
     finally:
         db.close()
+
 
 if __name__ == "__main__":
     main()

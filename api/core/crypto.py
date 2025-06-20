@@ -1,6 +1,6 @@
 from cryptography.fernet import Fernet, InvalidToken
 from typing import Optional
-from utils.logger import logger
+from api.utils.logger import logger
 
 
 def generate_user_key() -> str:

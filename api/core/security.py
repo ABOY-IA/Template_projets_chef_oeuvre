@@ -1,8 +1,8 @@
 import os
-from fastapi import Depends, HTTPException, Security, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jose import jwt, JWTError
-from utils.logger import logger
+from api.utils.logger import logger
 
 SECRET_KEY = os.getenv("SECRET_KEY", "mon_secret_default")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")

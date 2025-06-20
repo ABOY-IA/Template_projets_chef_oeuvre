@@ -1,7 +1,7 @@
 import os
 import httpx
 import streamlit as st
-from utils.logger import logger
+from frontend.utils.logger import logger
 
 API_URL = os.getenv("API_URL")
 

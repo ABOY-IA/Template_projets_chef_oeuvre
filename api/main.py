@@ -13,7 +13,7 @@ from api.admin.routes import router as admin_router
 from api.auth.routes import router as auth_router
 
 # Services transversaux
-from utils.logger import logger
+from api.utils.logger import logger
 from api.notify_discord import notify_discord
 import mlflow
 from prometheus_fastapi_instrumentator import Instrumentator

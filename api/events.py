@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from utils.logger import logger
+from api.utils.logger import logger
 from api.db.base import init_db
 
 

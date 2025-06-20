@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from api.db.models import User
 from api.core.crypto import generate_user_key
 import bcrypt
-from utils.logger import logger
+from api.utils.logger import logger
 
 
 def get_password_hash(password: str) -> str:

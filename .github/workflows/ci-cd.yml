@@ -96,7 +96,7 @@ jobs:
           python-version: '3.12'
 
       - name: Copy .env.example to .env
-        run: cp .env .env.ci || cp .env.example .env
+        run: cp .env.example .env
 
       - name: Build API Docker image
         run: docker build -t api-test $API_PATH

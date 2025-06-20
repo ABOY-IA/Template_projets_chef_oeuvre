@@ -43,7 +43,7 @@ def wait_for_port(host: str, port: int, timeout: int = 60):
 
 async def wait_for_pgsql(dsn: str, ssl_ctx, user: str, timeout: int = 60):
     start = time.monotonic()
-    last_error = None
+    # last_error = None
     attempt = 0
     while True:
         attempt += 1
@@ -57,7 +57,7 @@ async def wait_for_pgsql(dsn: str, ssl_ctx, user: str, timeout: int = 60):
             print("[wait_for_db] Database is ready to accept SQL connections.")
             return
         except Exception as e:
-            last_error = e
+            # last_error = e
             if time.monotonic() - start > timeout:
                 print(
                     f"[wait_for_db] Timeout: Database not ready for SQL after {timeout} seconds.\nLast error: {e}",

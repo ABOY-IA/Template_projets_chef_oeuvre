@@ -1,33 +1,65 @@
 import os
 from fastapi import FastAPI, HTTPException, status, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from typing import List
 from contextlib import asynccontextmanager
+from typing import List
+from pydantic import BaseModel
+import uvicorn
 
-from app.logger import logger
-from app.notify_discord import notify_discord
+# Routers métier
+from api.events import register_startup_events
+from api.users.routes import router as users_router
+from api.admin.routes import router as admin_router
+from api.auth.routes import router as auth_router
+
+# Services transversaux
+from utils.logger import logger
+from api.notify_discord import notify_discord
 import mlflow
 from prometheus_fastapi_instrumentator import Instrumentator
 
+# --- Configuration MLflow ---
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
+# --- Cycle de vie de l'application ---
 @asynccontextmanager
-async def lifespan(app):
+async def lifespan(app: FastAPI):
     logger.info("🚀 L'API FastAPI démarre (startup event)")
     notify_discord("🚀 L'API FastAPI vient de démarrer !", status="Démarrage")
     yield
 
+# --- Création de l'app FastAPI ---
 app = FastAPI(
-    title="API IA Projets Chef d'Œuvre",
-    description="API FastAPI pour l'orchestration IA, notifications et monitoring",
+    title="FastAPI Template Projets Chef d'oeuvre (100% async)",
+    description="API utilisateurs/sécurité, orchestration IA, monitoring, notifications.",
     version="1.0.0",
     lifespan=lifespan
 )
 
+# --- Enregistrement d'événements supplémentaires ---
+register_startup_events(app)
+
+# --- Instrumentation Prometheus ---
 Instrumentator().instrument(app).expose(app)
 
+# --- Inclusion des routers principaux ---
+app.include_router(users_router, prefix="/users", tags=["Users"])
+app.include_router(admin_router, prefix="/admin", tags=["Admin"])
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+
+# --- Endpoints principaux ---
+
+@app.get("/", tags=["Root"])
+async def read_root() -> dict:
+    return {"message": "Hello World"}
+
+@app.get("/health", tags=["Monitoring"])
+async def health() -> dict:
+    logger.info("Appel endpoint /health")
+    return {"status": "ok"}
+
+# --- Modèles Pydantic pour l'IA ---
 class PredictRequest(BaseModel):
     data: List[float]
 
@@ -40,10 +72,7 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     result: str
 
-@app.get("/health", tags=["Monitoring"])
-async def health():
-    logger.info("Appel endpoint /health")
-    return {"status": "ok"}
+# --- Endpoints IA ---
 
 @app.post("/predict", response_model=PredictResponse, tags=["IA"])
 async def predict(request: PredictRequest):
@@ -89,6 +118,7 @@ async def retrain():
         notify_discord(f"Erreur /retrain : {str(e)}", status="Erreur")
         raise HTTPException(status_code=500, detail=f"Erreur lors du retrain : {str(e)}")
 
+# --- Gestion globale des exceptions ---
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.exception(f"Erreur inattendue sur {request.url.path}: {exc}")
@@ -97,3 +127,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": "Erreur interne du serveur"}
     )
+
+# --- Point d'entrée pour lancement local ---
+if __name__ == "__main__":
+    uvicorn.run("api.main:app", host="0.0.0.0", port=8000, reload=True)

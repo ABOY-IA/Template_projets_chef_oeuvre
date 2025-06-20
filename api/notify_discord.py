@@ -1,7 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
-from app.logger import logger
+from utils.logger import logger
 
 load_dotenv()
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")

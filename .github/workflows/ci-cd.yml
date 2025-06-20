@@ -110,9 +110,9 @@ jobs:
 
       - name: Start services with Docker Compose
         run: |
-          docker compose -f docker compose.yml up -d db
+          docker compose -f docker-compose.yml up -d db
           sleep 20  # Laisse le temps à la DB de démarrer
-          docker compose -f docker compose.yml up -d api frontend
+          docker compose -f docker-compose.yml up -d api frontend
 
       - name: Wait for API to be healthy
         run: |
@@ -129,7 +129,7 @@ jobs:
 
       - name: Stop and clean up Docker Compose
         if: always()
-        run: docker compose -f docker compose.yml down -v
+        run: docker compose -f docker-compose.yml down -v
 
   build-and-push:
     name: Build & Push Docker Images

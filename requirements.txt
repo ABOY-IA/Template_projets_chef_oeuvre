@@ -9,6 +9,7 @@ coolname
 croniter
 databricks-sdk
 dateparser
+flake8
 fsspec
 gitdb
 GitPython
@@ -22,6 +23,7 @@ gunicorn
 humanize
 importlib_metadata
 importlib_resources
+isort
 jinja2-humanize-extension
 joblib
 jsonpatch

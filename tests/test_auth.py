@@ -1,6 +1,6 @@
 import pytest
 import asyncio
-from utils.logger import logger
+from tests.utils.logger import logger
 
 
 @pytest.mark.asyncio

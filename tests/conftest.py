@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 import api.db.base as db_base
 import api.db.session as db_sess
-from utils.logger import logger
+from tests.utils.logger import logger
 
 
 @pytest.fixture(scope="session")

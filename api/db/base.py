@@ -1,9 +1,7 @@
 import asyncio
-from sqlalchemy.ext.asyncio import AsyncEngine
-from sqlalchemy import text
 from .models import Base
 from .session import async_engine
-from utils.logger import logger
+from api.utils.logger import logger
 
 
 async def init_db(max_retries: int = 30, delay: float = 2.0) -> None:

@@ -3,7 +3,7 @@ import pytest_asyncio
 from uuid import uuid4
 from api.core.crypto import generate_user_key
 from api.db.services import create_user
-from utils.logger import logger
+from tests.utils.logger import logger
 
 
 @pytest_asyncio.fixture

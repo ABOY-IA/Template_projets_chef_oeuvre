@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from jose import jwt
 import uuid
-from utils.logger import logger
+from api.utils.logger import logger
 
 SECRET_KEY = os.getenv("SECRET_KEY", "mon_secret_default")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")

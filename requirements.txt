@@ -3,13 +3,11 @@
 
 aiosqlite
 apprise
-black
 cloudpickle
 coolname
 croniter
 databricks-sdk
 dateparser
-flake8
 fsspec
 gitdb
 GitPython
@@ -23,7 +21,6 @@ gunicorn
 humanize
 importlib_metadata
 importlib_resources
-isort
 jinja2-humanize-extension
 joblib
 jsonpatch
@@ -37,6 +34,7 @@ markdown-it-py
 MarkupSafe
 mdurl
 mlflow-skinny
+mypy
 oauthlib
 opentelemetry-api
 opentelemetry-sdk
@@ -74,6 +72,7 @@ rpds-py
 rsa
 ruamel.yaml
 ruamel.yaml.clib
+ruff
 scipy
 shellingham
 six

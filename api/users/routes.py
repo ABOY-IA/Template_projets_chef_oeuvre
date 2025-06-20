@@ -14,7 +14,7 @@ from api.db.services import (
 from api.db.models import User, UserSensitiveData
 from api.core.crypto import encrypt_sensitive_data, decrypt_sensitive_data
 from api.core.tokens import create_access_token
-from utils.logger import logger
+from api.utils.logger import logger
 import os
 from datetime import timedelta
 

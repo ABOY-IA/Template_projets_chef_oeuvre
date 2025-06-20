@@ -17,6 +17,8 @@ services:
       timeout: 3s
       retries: 20
       start_period: 60s
+    networks:
+      - template_network
 
   # --- Backend principal (API FastAPI) ---
   api:
@@ -26,7 +28,6 @@ services:
     container_name: fastapi_app
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
-      # - ./api:/app/api
       - ./logs:/app/logs
     ports:
       - "${API_PORT}:8000"
@@ -42,6 +43,8 @@ services:
       timeout: 3s
       retries: 5
       start_period: 20s
+    networks:
+      - template_network
 
   # --- Orchestration Prefect ---
   prefect-server:
@@ -67,6 +70,8 @@ services:
       interval: 5s
       timeout: 10s
       retries: 20
+    networks:
+      - template_network
 
   prefect-worker:
     image: prefecthq/prefect:2-python3.12
@@ -83,6 +88,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/home/karn1zc/Simplon/Template_projets_chef_oeuvre
+    networks:
+      - template_network
 
   # --- MLflow tracking server ---
   mlflow:
@@ -96,10 +103,12 @@ services:
       MLFLOW_ARTIFACT_ROOT: ${MLFLOW_ARTIFACT_ROOT}
       MLFLOW_BACKEND_STORE_URI: ${MLFLOW_BACKEND_STORE_URI}
     volumes:
-      - ./mlruns:${MLFLOW_ARTIFACT_ROOT}
-      - ./mlflow_data:/mlflow_data
+      - ./monitoring/mlruns:${MLFLOW_ARTIFACT_ROOT}
+      - ./monitoring/mlflow_data:/mlflow_data
     restart: unless-stopped
     command: mlflow server --host 0.0.0.0 --port 5000
+    networks:
+      - template_network
 
   # --- Monitoring Prometheus ---
   prometheus:
@@ -109,7 +118,9 @@ services:
     ports:
       - "${PROMETHEUS_PORT}:9090"
     volumes:
-      - ./prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - template_network
 
   # --- Monitoring Grafana ---
   grafana:
@@ -121,7 +132,9 @@ services:
     ports:
       - "${GRAFANA_PORT}:3000"
     volumes:
-      - ./grafana_data:/var/lib/grafana
+      - ./monitoring/grafana_data:/var/lib/grafana
+    networks:
+      - template_network
 
   # --- Uptime Kuma (monitoring de disponibilité) ---
   uptime-kuma:
@@ -130,8 +143,10 @@ services:
     ports:
       - "${UPTIME_KUMA_PORT}:3001"
     volumes:
-      - uptime-kuma-data:/app/data
+      - ./monitoring/uptime-kuma-data:/app/data
     restart: unless-stopped
+    networks:
+      - template_network
 
   # --- Frontend (Streamlit ou autre) ---
   frontend:
@@ -148,6 +163,8 @@ services:
       - api
     env_file:
       - .env
+    networks:
+      - template_network
 
 # --- Déclaration des volumes persistants ---
 volumes:
@@ -156,3 +173,8 @@ volumes:
   prefect-postgres-data:
   grafana_data:
   uptime-kuma-data:
+
+# --- Déclaration des réseaux ---
+networks:
+  template_network:
+    driver: bridge

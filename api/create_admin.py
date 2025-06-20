@@ -3,7 +3,7 @@ from getpass import getpass
 from api.db.session import SessionLocal
 from api.db.services import create_user
 from api.core.crypto import generate_user_key
-from utils.logger import logger
+from api.utils.logger import logger
 from dotenv import load_dotenv
 
 load_dotenv()

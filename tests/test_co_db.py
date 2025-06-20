@@ -1,6 +1,6 @@
 import pytest
 from api.db.session import connect_to_db
-from utils.logger import logger
+from tests.utils.logger import logger
 
 
 @pytest.mark.asyncio

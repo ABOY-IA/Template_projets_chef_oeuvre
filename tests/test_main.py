@@ -10,16 +10,17 @@ import httpx
 from unittest.mock import patch, MagicMock
 from asgi_lifespan import LifespanManager
 from api.main import app
-from utils.logger import logger
+from tests.utils.logger import logger
 
 
 @pytest.fixture(autouse=True)
 def mock_external_dependencies():
-    with patch("app.notify_discord.notify_discord") as mock_notify, patch(
-        "mlflow.start_run"
-    ) as mock_start_run, patch("mlflow.log_param") as mock_log_param, patch(
-        "mlflow.log_metric"
-    ) as mock_log_metric:
+    with (
+        patch("app.notify_discord.notify_discord") as mock_notify,
+        patch("mlflow.start_run") as mock_start_run,
+        patch("mlflow.log_param") as mock_log_param,
+        patch("mlflow.log_metric") as mock_log_metric,
+    ):
         mock_start_run.return_value.__enter__.return_value = MagicMock()
         yield
 

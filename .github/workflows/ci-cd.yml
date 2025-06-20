@@ -29,23 +29,32 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint API code
+      - name: Ruff lint API code
         run: |
-          black --check $API_PATH
-          flake8 $API_PATH
-          isort --check-only $API_PATH
+          ruff check $API_PATH --output-format github
+          ruff format $API_PATH --check --output-format github
 
-      - name: Lint Frontend code
+      - name: Ruff lint Frontend code
         run: |
-          black --check $FRONTEND_PATH
-          flake8 $FRONTEND_PATH
-          isort --check-only $FRONTEND_PATH
+          ruff check $FRONTEND_PATH --output-format github
+          ruff format $FRONTEND_PATH --check --output-format github
 
-      - name: Lint tests and utils
+      - name: Ruff lint tests
         run: |
-          black --check ./tests ./utils
-          flake8 ./tests ./utils
-          isort --check-only ./tests ./utils
+          ruff check ./tests --output-format github
+          ruff format ./tests --check --output-format github
+
+      - name: Check for type errors with mypy
+        run: |
+          mypy $API_PATH $FRONTEND_PATH ./tests
+
+      - name: Check for import sorting with Ruff
+        run: |
+          ruff check --select I . --output-format github
+
+      - name: Check for unused imports and variables
+        run: |
+          ruff check --select F401,F841 . --output-format github
 
   security:
     name: Security & Dependency Audit

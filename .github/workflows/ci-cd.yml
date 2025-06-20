@@ -61,10 +61,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Check for vulnerabilities
-        uses: pypa/gh-action-pip-audit@v1
+        uses: pypa/gh-action-pip-audit@v1.0.0
 
       - name: Check for secrets in code
-        uses: trufflesecurity/trufflehog@v3
+        uses: trufflesecurity/trufflehog@v3.88.3
 
   build-and-test:
     name: Build & Test (Docker Compose)

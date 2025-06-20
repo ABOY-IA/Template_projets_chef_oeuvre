@@ -3,6 +3,7 @@
 
 aiosqlite
 apprise
+black
 cloudpickle
 coolname
 croniter
@@ -43,6 +44,7 @@ packaging
 pathspec
 pendulum
 pillow
+pip-audit
 pluggy
 protobuf
 pyarrow

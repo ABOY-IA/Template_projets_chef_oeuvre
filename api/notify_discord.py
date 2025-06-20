@@ -6,6 +6,7 @@ from utils.logger import logger
 load_dotenv()
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
+
 def notify_discord(message: str, status: str = "Succès"):
     """
     Envoie une notification formatée (embed) à Discord via Webhook.
@@ -15,24 +16,24 @@ def notify_discord(message: str, status: str = "Succès"):
         return
 
     embed = {
-        "embeds": [{
-            "title": "Résultats du pipeline",
-            "description": message,
-            "color": 5814783,
-            "fields": [
-                {
-                    "name": "Status",
-                    "value": status,
-                    "inline": True
-                }
-            ]
-        }]
+        "embeds": [
+            {
+                "title": "Résultats du pipeline",
+                "description": message,
+                "color": 5814783,
+                "fields": [
+                    {"name": "Status", "value": status, "inline": True}
+                ],
+            }
+        ]
     }
 
     try:
         response = requests.post(WEBHOOK_URL, json=embed)
         if response.status_code != 204:
-            logger.error(f"Erreur Discord : {response.status_code} - {response.text}")
+            logger.error(
+                f"Erreur Discord : {response.status_code} - {response.text}"
+            )
         else:
             logger.success("Notification Discord envoyée avec succès.")
     except Exception as e:

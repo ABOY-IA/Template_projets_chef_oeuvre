@@ -1,6 +1,7 @@
 import pytest
 from utils.logger import logger
 
+
 @pytest.mark.asyncio
 async def test_health_check(async_client):
     logger.info("Début du test: test_health_check")

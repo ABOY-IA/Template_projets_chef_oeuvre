@@ -2,6 +2,7 @@ import pytest
 from api.db.session import connect_to_db
 from utils.logger import logger
 
+
 @pytest.mark.asyncio
 async def test_database_connection_does_not_fail():
     try:

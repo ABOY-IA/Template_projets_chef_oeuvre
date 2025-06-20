@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from utils.logger import logger
 from api.db.base import init_db
 
+
 def register_startup_events(app: FastAPI):
     @app.on_event("startup")
     async def on_startup():

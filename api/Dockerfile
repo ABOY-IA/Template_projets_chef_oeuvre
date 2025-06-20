@@ -13,7 +13,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copier le code source de l’API
-COPY . .
+COPY . /app/api
 
 # Copier le script d'attente pour la base de données
 COPY wait_for_db.py /app/wait_for_db.py

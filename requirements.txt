@@ -85,6 +85,8 @@ text-unidecode
 threadpoolctl
 toml
 typer
+types-python-jose
+types-requests
 typing-inspection
 typing_extensions
 tzdata

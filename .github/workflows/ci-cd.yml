@@ -32,17 +32,17 @@ jobs:
       - name: Ruff lint API code
         run: |
           ruff check $API_PATH --output-format github
-          ruff format $API_PATH --check --output-format github
+          ruff format $API_PATH --check
 
       - name: Ruff lint Frontend code
         run: |
           ruff check $FRONTEND_PATH --output-format github
-          ruff format $FRONTEND_PATH --check --output-format github
+          ruff format $FRONTEND_PATH --check
 
       - name: Ruff lint tests
         run: |
           ruff check ./tests --output-format github
-          ruff format ./tests --check --output-format github
+          ruff format ./tests --check
 
       - name: Check for type errors with mypy
         run: |
@@ -84,18 +84,6 @@ jobs:
   build-and-test:
     name: Build & Test (Docker Compose)
     runs-on: ubuntu-latest
-    services:
-      db:
-        image: postgres:16
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: pass
-          POSTGRES_DB: xtremdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U user" --health-interval=10s --health-timeout=5s --health-retries=5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

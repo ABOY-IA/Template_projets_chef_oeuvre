@@ -12,7 +12,7 @@ if "user" in st.session_state:
             st.session_state.pop(k, None)
         logger.info("Utilisateur déconnecté via l'interface login.")
 
-st.title("FastAPI Xtrem – Connexion / Inscription")
+st.title("FastAPI Template for AI Projects – Connexion / Inscription")
 page = st.sidebar.selectbox("Navigation", ["Connexion", "Inscription"])
 
 if page == "Connexion":

@@ -1,6 +1,6 @@
 import asyncio
-from .models import Base
-from .session import async_engine
+from api.db.models import Base
+from api.db.session import async_engine
 from api.utils.logger import logger
 
 

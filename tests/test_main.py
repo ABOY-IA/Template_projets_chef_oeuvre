@@ -13,7 +13,6 @@ from api.main import app
 from tests.utils.logger import logger
 
 
-
 @pytest.fixture(autouse=True)
 def mock_external_dependencies():
     with (
@@ -27,6 +26,7 @@ def mock_external_dependencies():
         mock_log_param.return_value = None
         mock_log_metric.return_value = None
         yield
+
 
 @pytest.mark.asyncio
 async def test_health_check():

@@ -10,7 +10,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copier l’ensemble des fichiers du frontend
-COPY . .
+COPY . /app
 
 # Définir la commande de démarrage de Streamlit
-CMD ["streamlit", "run", "app.py", "--server.enableCORS", "true"]
+CMD ["streamlit", "run", "frontend/app.py", "--server.enableCORS", "true"]

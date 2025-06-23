@@ -1,4 +1,5 @@
 import os
+import sys
 import pytest
 import pytest_asyncio
 import asyncio
@@ -8,6 +9,10 @@ from sqlalchemy.orm import sessionmaker
 import api.db.base as db_base
 import api.db.session as db_sess
 from tests.utils.logger import logger
+
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
 
 
 @pytest.fixture(scope="session")

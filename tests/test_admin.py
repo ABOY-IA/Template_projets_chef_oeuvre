@@ -1,9 +1,15 @@
+import os
+import sys
 import pytest
 import pytest_asyncio
 from uuid import uuid4
 from api.core.crypto import generate_user_key
 from api.db.services import create_user
 from tests.utils.logger import logger
+
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
 
 
 @pytest_asyncio.fixture

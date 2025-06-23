@@ -2,6 +2,7 @@ import sys
 import time
 import requests
 
+
 if len(sys.argv) < 2:
     print("Usage: python wait_for_api.py <url> [timeout]")
     sys.exit(1)

@@ -1,4 +1,12 @@
 import os
+
+# Correction dynamique du host pour la base de tests
+if "DATABASE_URL" in os.environ:
+    url = os.environ["DATABASE_URL"]
+    # Si on est en local (pas dans Docker) et que le host est "db", on remplace par "localhost"
+    if "@" in url and "db" in url and not os.path.exists("/.dockerenv"):
+        os.environ["DATABASE_URL"] = url.replace("@db", "@localhost")
+
 import pytest
 import pytest_asyncio
 import asyncio

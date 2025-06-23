@@ -1,10 +1,3 @@
-import sys
-import os
-
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-)
-
 import pytest
 import httpx
 from unittest.mock import patch, MagicMock
@@ -22,6 +15,9 @@ def mock_external_dependencies():
         patch("mlflow.log_metric") as mock_log_metric,
     ):
         mock_start_run.return_value.__enter__.return_value = MagicMock()
+        mock_notify.return_value = None
+        mock_log_param.return_value = None
+        mock_log_metric.return_value = None
         yield
 
 

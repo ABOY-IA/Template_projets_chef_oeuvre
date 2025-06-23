@@ -120,8 +120,16 @@ jobs:
       - name: Start services with Docker Compose
         run: |
           docker compose -f docker-compose.yml up -d db
-          sleep 20  # Laisse le temps à la DB de démarrer
-          docker compose -f docker-compose.yml up -d api frontend
+
+      - name: Wait for Postgres to be ready
+        run: |
+          for i in {1..20}; do
+            docker exec postgres_custom pg_isready -U admin -d mypostgresdb && exit 0 || sleep 2
+          done
+          exit 1
+          
+      - name: Start API and Frontend
+        run: docker compose -f docker-compose.yml up -d api frontend
 
       - name: Wait for API to be healthy
         run: |

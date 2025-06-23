@@ -6,34 +6,83 @@
 
 1. Créer le fichier `.env` et renseigner les variables en se basant sur ce modèle :
 ```
-# FastAPI
-API_PORT=8000
+#######################
+# --- API FastAPI --- #
+#######################
 
-# Prefect
+API_PORT=8000
+API_URL=http://api:8000
+
+# Clé secrète pour JWT (à personnaliser en prod)
+SECRET_KEY=changeme_secret_key
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+ADMIN_CREATION_SECRET=changeme_admin_secret
+
+# Discord Webhook (dummy pour CI, à remplacer en prod)
+WEBHOOK_URL=https://discord.com/api/webhooks/dummy/dummy
+
+###########################
+# --- Base de données --- #
+###########################
+
+# Pour le service db (postgres-custom)
+DB_HOST=db
+DB_PORT=5432
+DB_WAIT_TIMEOUT=120
+POSTGRES_USER=ci_admin
+POSTGRES_PASSWORD=ci_admin_pass
+POSTGRES_DB=ci_db
+
+# Pour Prefect (utilisé par l'app, pas par Postgres à l'init)
+PREFECT_DB_USER=ci_prefect_user
+PREFECT_DB_PASSWORD=ci_prefect_pass
+PREFECT_DB_NAME=ci_prefect_db
+
+# URL SQLAlchemy pour Prefect server
+PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://ci_prefect_user:ci_prefect_pass@db:5432/ci_prefect_db
+
+# URL SQLAlchemy pour l'API principale
+DATABASE_URL=postgresql://ci_admin:ci_admin_pass@db:5432/ci_db
+
+##########################
+# --- Prefect --- #
+##########################
+
 PREFECT_API_URL=http://prefect-server:4200/api
 PREFECT_WORK_POOL=default-work-pool
+PREFECT_SERVER_PORT=4200
 
-# PostgreSQL (pour Prefect)
-POSTGRES_USER=xxxx
-POSTGRES_PASSWORD=xxxx
-POSTGRES_DB=xxxx
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
+##########################
+# --- MLflow --- #
+##########################
 
-# Prefect DB connection string
-PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://prefect:prefect@postgres:5432/prefect
-
-# Discord Webhook (ne jamais exposer en clair dans le code)
-WEBHOOK_URL=https://discord.com/api/webhooks/
-
-# MLflow
 MLFLOW_PORT=5000
 MLFLOW_ARTIFACT_ROOT=/mlflow/artifacts
 MLFLOW_BACKEND_STORE_URI=sqlite:////mlflow_data/mlflow.db
 
-# Prometheus & Grafana
+##########################
+# --- Monitoring --- #
+##########################
+
 PROMETHEUS_PORT=9090
 GRAFANA_PORT=3000
+UPTIME_KUMA_PORT=3001
+
+##########################
+# --- Frontend --- #
+##########################
+
+FRONTEND_PORT=8501
+STREAMLIT_BROWSER_GATHERUSAGESTATS=false
+
+##########################
+# --- Divers / Options --- #
+##########################
+
+# Compose bake (optionnel)
+COMPOSE_BAKE=true
 ```
 
 2. Construire et lancer les services.
@@ -58,6 +107,14 @@ Build complet et lancement de la stack :
 
 `export COMPOSE_BAKE=true && docker compose up --build -d`
 
+Build complet sans cache :
+
+`export COMPOSE_BAKE=true && docker compose build --no-cache`
+
+Lancement de la stack :
+
+`export COMPOSE_BAKE=true && docker compose up -d`
+
 Nettoyer entièrement (images, volumes, orphelins) :
 `docker compose down --rmi all --volumes --remove-orphans`
 Adapter pour ne supprimer que les images ou tout sauf les volumes pour ne pas recréer le compte admin Uptime Kuma.
@@ -73,6 +130,14 @@ Relancer simplement (si déjà build) :
 Arrêter la stack (tous les services) :
 
 `docker compose down`
+
+Nettoie tout le disque dur de tous les fichiers et service :
+
+`docker system prune`
+
+### Créer un compte admin
+
+`docker-compose run --rm api python create_admin.py`
 
 ## 🐍 Environnement Python
 
@@ -131,43 +196,6 @@ pip freeze > requirements.txt
 Le fichier `.env` doit être créé à la racine du projet.  
 Il contient toutes les variables d’environnement nécessaires au fonctionnement de l’application et à la configuration de Docker Compose.
 
-**Exemple de contenu minimal :**
-```
-# Clé secrète utilisée pour signer et vérifier les JWT (doit être identique partout)
-SECRET_KEY=supersecretkey123
-
-# Algorithme utilisé pour les JWT (par défaut: HS256)
-ALGORITHM=HS256
-
-# Durée de vie des tokens access/refresh (en minutes/jours)
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
-
-# Clé de création admin (si utilisée)
-ADMIN_CREATION_SECRET=MonSecretSuperSecurise
-
-# Connexion à la base Postgres
-DATABASE_URL=postgresql://user:pass@db:5432/xtremdb
-
-# Configuration de la base de données
-DB_HOST=db
-DB_PORT=5432
-DB_WAIT_TIMEOUT=120
-POSTGRES_USER=user
-POSTGRES_PASSWORD=pass
-POSTGRES_DB=xtremdb
-
-# URL de l'API (pour le frontend ou les tests)
-API_URL=http://api:8000
-
-# Désactive la télémétrie Streamlit
-STREAMLIT_BROWSER_GATHERUSAGESTATS=false
-
-# Compose bake (optionnel, selon ton usage)
-COMPOSE_BAKE=true
-```
-
----
 
 ## 🔒 Sécurité PostgreSQL
 
@@ -217,7 +245,118 @@ docker-compose run --rm api python create_admin.py
 
 ## 📁 Arborescence du projet
 
-
+```
+.
+├── README.md
+├── api
+│   ├── Dockerfile
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-312.pyc
+│   │   ├── events.cpython-312.pyc
+│   │   ├── logger.cpython-312.pyc
+│   │   └── main.cpython-312.pyc
+│   ├── admin
+│   │   ├── __pycache__
+│   │   │   └── routes.cpython-312.pyc
+│   │   └── routes.py
+│   ├── auth
+│   │   ├── __pycache__
+│   │   │   └── routes.cpython-312.pyc
+│   │   └── routes.py
+│   ├── core
+│   │   ├── __pycache__
+│   │   │   ├── crypto.cpython-312.pyc
+│   │   │   ├── security.cpython-312.pyc
+│   │   │   ├── testing_middleware.cpython-312.pyc
+│   │   │   └── tokens.cpython-312.pyc
+│   │   ├── crypto.py
+│   │   ├── security.py
+│   │   └── tokens.py
+│   ├── create_admin.py
+│   ├── db
+│   │   ├── __pycache__
+│   │   │   ├── base.cpython-312.pyc
+│   │   │   ├── models.cpython-312.pyc
+│   │   │   ├── schemas.cpython-312.pyc
+│   │   │   ├── services.cpython-312.pyc
+│   │   │   └── session.cpython-312.pyc
+│   │   ├── base.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── services.py
+│   │   └── session.py
+│   ├── events.py
+│   ├── flow.py
+│   ├── main.py
+│   ├── notify_discord.py
+│   ├── periodic_check-deployment.yaml
+│   ├── requirements.txt
+│   ├── users
+│   │   ├── __pycache__
+│   │   │   └── routes.cpython-312.pyc
+│   │   └── routes.py
+│   ├── utils
+│   │   └── logger.py
+│   └── wait_for_db.py
+├── docker-compose.yml
+├── frontend
+│   ├── Dockerfile
+│   ├── app.py
+│   ├── logs
+│   ├── pages
+│   │   ├── 0_login.py
+│   │   ├── 1_profil.py
+│   │   └── 2_administration.py
+│   ├── requirements.txt
+│   └── utils
+│       ├── __pycache__
+│       │   └── logger.cpython-312.pyc
+│       └── logger.py
+├── logs
+│   └── frontend.log
+├── models
+├── monitoring
+│   ├── grafana_data
+│   ├── mlflow_data
+│   │   └── mlflow.db
+│   ├── mlruns
+│   ├── prometheus_data
+│   │   └── prometheus.yml
+│   └── uptime-kuma-data
+│       ├── docker-tls
+│       ├── kuma.db
+│       ├── screenshots
+│       └── upload
+├── pipelines
+├── postgres-custom
+│   ├── Dockerfile
+│   ├── docker-entrypoint-init-custom.sh
+│   ├── docker-entrypoint-initdb.d
+│   │   └── init-users.sql
+│   ├── pg_hba.conf
+│   ├── postgresql.conf
+│   ├── server.crt
+│   └── server.key
+├── pyproject.toml
+├── pytest.ini
+├── requirements.txt
+└── tests
+    ├── __pycache__
+    │   ├── __init__.cpython-312.pyc
+    │   ├── test_main.cpython-312-pytest-8.4.1.pyc
+    │   └── test_minimal.cpython-312-pytest-8.4.1.pyc
+    ├── conftest.py
+    ├── test_admin.py
+    ├── test_auth.py
+    ├── test_co_db.py
+    ├── test_main.py
+    ├── test_monitoring.py
+    ├── test_users.py
+    ├── utils
+    │   └── logger.py
+    └── wait_for_api.py
+```
 
 ---
 

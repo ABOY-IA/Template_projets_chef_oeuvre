@@ -58,6 +58,8 @@ Pygments
 pyparsing
 pytest
 pytest-asyncio
+pytest-env
+pytest-order
 python-slugify
 python-socks
 pytz

@@ -1,11 +1,7 @@
-import os
 import sys
 import time
 import requests
 
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-)
 
 if len(sys.argv) < 2:
     print("Usage: python wait_for_api.py <url> [timeout]")
